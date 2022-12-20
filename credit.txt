@@ -1,0 +1,4 @@
+	I've used following libraries in this project :
+
+	1. Metro UI
+	2. Anime JS

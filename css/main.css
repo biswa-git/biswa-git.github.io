@@ -1,0 +1,230 @@
+body{
+	background: rgb(75, 75, 75);
+	overflow-y: auto;
+	overflow-x: hidden;}
+
+button{
+	background: #111;
+	color: #bbb;
+	padding: 5px;
+	border-color: #111;
+}
+
+ul{
+	list-style-type: none;
+	padding: 5px;
+}
+
+li{
+	list-style-type: none;
+	display: inline;
+	color: #ffffff;
+	margin: 15px;
+}
+
+/* unvisited link */
+a:link {
+	color: rgba(255,255,255,1);
+}
+
+/* visited link */
+a:visited {
+	color: rgba(255,255,255,0.8);
+}
+
+/* mouse over link */
+a:hover {
+	color: rgba(76, 159, 255,1);
+}
+
+/* selected link */
+a:active {
+	color: rgba(76, 159, 255,0.8);
+}
+
+.hl-green{
+	color: rgb(164, 244, 66);
+}
+
+.hl-blue{
+	color: rgb(76, 159, 255);
+}
+
+.hl-deep-blue{
+	color: rgb(50, 120, 200);
+}
+
+.hl-white{
+	color: rgb(200, 200, 200);
+}
+
+.hl-pure-white{
+	color: rgb(255, 255, 255);
+}
+
+.hl-light-grey{
+	color: rgb(150,150,150);
+}
+
+.hl-grey{
+	color: rgb(75,75,75);
+}
+
+.bg-yellow{
+	background: #000;
+}
+
+#main-container{
+	background: rgb(75, 75, 75);
+	position: absolute;
+	top: 40%;
+	left: 0px;
+	width: 100%;
+	padding-top: 40px;
+	opacity: 0;
+	z-index: 1000;
+}
+
+#research{
+	position: absolute;
+	top: -100%;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background: rgb(255, 255, 255);
+	opacity: 0;
+}
+
+#results{
+	position: absolute;
+	top: -100%;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background: rgb(255, 255, 255);
+	opacity: 0;
+}
+
+#codes{
+	position: absolute;
+	top: -100%;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background: rgb(12, 18, 99)
+	opacity: 0;
+}
+
+.close{
+	position: fixed;
+	top:20px;
+	right: 30px;
+	padding: 8px;
+	border-radius: 5px;
+	border: #969696 2px solid;
+}
+
+.close:hover{
+	color: #ff6060;
+	border: #ff6060 2px solid;
+}
+
+.cursor{
+	cursor: pointer;
+	z-index: 100;
+}
+.font-Montserrat{
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 200;
+}
+
+.font-Montserrat-B{
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
+}
+
+.font-Poppins{
+	font-family: 'Poppins', sans-serif;
+}
+
+.font-Exo{
+	font-family: 'Exo', sans-serif;
+	font-weight: 200;
+}
+
+.font-Exo-B{
+	font-family: 'Exo', sans-serif;
+	font-weight: 400;
+}
+
+.font-Karla{
+	font-family: 'Karla', sans-serif;
+}
+
+.font-size-header{
+	font-size: 78px;
+}
+
+.font-size-menu{
+	font-size: 16px;
+}
+
+.font-size-title{
+	font-size: 24px;
+}
+
+.font-size-text{
+	font-size: 16px;
+}
+
+.footer{
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	padding-top: 5px;
+	background: rgb(60,60,60);
+	z-index: 1000;
+}
+
+.footer-compensation{
+	height: 60px;
+}
+
+.font-size-footer{
+	font-size: 12px;
+	margin-top: 3px;
+}
+
+.text-align-justify{
+	text-decoration: none;
+	text-align: justify;
+}
+
+.cube18{
+	height: 14px;
+	width: 10px;
+	margin-top: 2px;
+	background: rgb(255,255,255);
+}
+
+::-webkit-scrollbar {
+	width: 1%;
+}
+
+::-webkit-scrollbar-track {
+	background: rgba(200,200,200,0.5);
+}
+
+::-webkit-scrollbar-thumb {
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+    background: rgba(80,80,80,0.8);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: rgba(50,50,50,0.8);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(120,120,120,0.5); 
+}
