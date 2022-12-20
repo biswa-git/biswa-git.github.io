@@ -1,11 +1,194 @@
+
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+<head lang="en">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="description" content="Personal homepage of Biswajit Ghosh, P.hD scholar, IIT Kanpur">
+	<meta name="keywords" content="Biswajit, Ghosh, CMERI, IIT Kanpur, Haldia Institute of Technology, CFD, SIMPLE, MAC, Projection, BiCG Stab">
+	<meta name="author" content="Biswajit Ghosh">
+	<!-- Chrome, Firefox OS and Opera -->
+	<meta name="theme-color" content="#505050">
+	<!-- Windows Phone -->
+	<meta name="msapplication-navbutton-color" content="#505050">
+	<!-- iOS Safari -->
+	<meta name="apple-mobile-web-app-status-bar-style" content="#505050">
+	<link rel='shortcut icon' href="http://www.iitk.ac.in/new/images/page-images/logo/redlogo.jpg" type="image/x-icon">
 	<title>Biswajit Ghosh</title>
-</head>
-<body>
-	Hello World!
+
+	<link href="css/metro.css" rel="stylesheet">
+	<link href="css/metro-icons.css" rel="stylesheet">
+	<link href="css/metro-responsive.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400|Exo:200,400|Karla|Poppins:400,700" rel="stylesheet">
+
+	<script src="js/metro.min.js"></script>
+	<script type="text/javascript" src="js/anime.min.js"></script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    });
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+
+	</head>
+
+
+<body id="bg">
+
+	<div class="flex-grid" id="main-container">
+			
+		<h1 class="align-center font-size-header font-Exo hl-white padding20 no-padding-left no-padding-right no-padding-bottom">Hello!</h1>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~INTRO~~~~~~~~~~~~~~~~~~~~~~ -->
+		<div class="row align-justify">
+			<div class="cell size1"></div>
+			<div class="cell size5">
+				<div class="padding30 no-padding-bottom">
+					<font class="font-Montserrat-B hl-pure-white font-size-text">Welcome to my personal homepage. I am <b class="hl-blue">Biswajit Ghosh</b>, presently working as a P.hD scholar in department of <i class="hl-green">Aerospace Engineering</i>, <i class="hl-green">IIT Kanpur</i> and my research interest primarily focused toward <i class="hl-green">Computational Fluid Dnamics</i>.</font>
+				</div>
+			</div>
+			<div class="cell size5">
+				<div class="padding30 no-padding-bottom">
+					<font class="font-Montserrat-B hl-pure-white font-size-text">Apart from studies, I have immense interest in <i class="hl-green">Painting</i>. I do enjoy <i class="hl-green">music</i> and <i class="hl-green">football</i> too.<div class="cube18"></div></font>
+				</div>
+			</div>
+			<div class="cell size1"></div>
+		</div>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~INTRO~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~ MENU~~~~~~~~~~~~~~~~~~~~~~ -->
+		<div class="row flex-just-sb">
+			<div class="cell size2"></div>
+			<div class="cell size8">
+				<ul class="numeric-list dark-bullet align-center hl-pure-white font-Exo-B padding20 font-size-menu" id="menu">
+					<li id="menu-research" class="cursor">Research</li>
+					<li id="menu-results"  class="cursor">Gallery</li>
+					<li id="menu-codes"    class="cursor">Codes</li>
+				</ul>
+			</div>
+			<div class="cell size2"></div>
+		</div>
+		<div class="footer-compensation"></div>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~ MENU~~~~~~~~~~~~~~~~~~~~~~ -->
+	</div>
+
+	<div class="flex-grid" id="research"> <!--research interest-->
+		  <h1 class="align-left font-size-title font-Exo-B hl-grey padding20 no-padding-right no-padding-bottom">Research Interest</h1>
+
+		  <div class="row align-justify">
+		  	<span id="close-research" class="mif-cross close cursor hl-light-grey"></span>
+		  </div>
+
+		<!--br><br><br><br><br><br><br><br><h1 class="align-center font-Montserrat hl-grey font-size-title">This page is <i class="hl-deep-blue">under construction</i>. Sorry!</h1-->
+
+<div class="row align-justify">
+<div class="cell size2"></div>
+<div class="cell size8">
+                 <ul class="margin40">
+                    <!--li>
+                        <h2 class="no-margin-top hl-light-grey font-size-title" style="text-align: left;">Immersed Boundary Method (IBM)</h2>
+                        <hr class="bg-blue" />
+                        <div class="hl-grey" style="text-align: justify;"><br>
+                        
+                            During the summer term of 2017, I spent my time understanding the error dynamics of the numerical soution of $2D$ convection diffussion equation, which is given as,<br> <eq style="font-size: 10px">$$
+
+                            \frac{\partial{u}}{\partial{t}} + c_x \frac{\partial{u}}{\partial{x}} + c_y \frac{\partial{u}}{\partial{y}} = \alpha \left( \frac{\partial^2{u}}{\partial{x^2}} + \frac{\partial^2{u}}{\partial{y^2}} \right) $$</eq>
+
+                            We obtained the error equation as,<br> <eq style="font-size: 10px">$$
+
+                            \frac{\partial{e}}{\partial{t}} + c_x \frac{\partial{e}}{\partial{x}} + c_y \frac{\partial{e}}{\partial{y}} - \alpha \left( \frac{\partial^2{e}}{\partial{x^2}} + \frac{\partial^2{e}}{\partial{y^2}} \right) = \\
+
+                            -\frac{\partial{u_N}}{\partial{t}} - c_x \frac{\partial{u_N}}{\partial{x}} - c_y \frac{\partial{u_N}}{\partial{y}} + \alpha \left( \frac{\partial^2{u_N}}{\partial{x^2}} + \frac{\partial^2{u_N}}{\partial{y^2}} \right)
+
+                            $$</eq>
+                            In Von Neumann analysis, the right-hand side of error eqution is considered to be zero.
+                            Whereas, in the present study it has been shown that the right-hand side of error equation has non-zero quantitties. It is also noted that source term of error equation plays important role on generating the error during first few time-step.
+                            <br />
+                            <br />
+
+
+                            <button class="button info">Know More</button>
+                        </div>
+                    </li>
+                    <br/-->
+                    <li>
+                        <h2 class="no-margin-top hl-light-grey font-size-title" style="text-align: left;">Immersed Boundary Method (IBM)</h2>
+                        <hr class="bg-blue" />
+                        <div class="hl-grey" style="text-align: justify;"></br>
+                            Immersed Boundary Method, popularly known as IBM, is a fast growing research trend among CFD practitioners, who are seeking a simple and efficient way to handle complex geometries. Unlike conventional CFD techniques, in IBM body fitted grid is not necessary for flow calculation, rather information is interpolated to solid-liquid interface from nearby grid points.
+                            
+                        <br>
+                        <br>
+
+                            <div class="image-container" style="border: 1px #bbb solid;">
+                            <div class="frame"><img src="img/ibm.jpg"></div>
+                            <!--div class="image-overlay">
+                                <h2>Image title</h2>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                </p>
+                            </div-->
+                        </div>
+                            <br>
+                            <br>
+                            Fig: Simulation of flow past cylinder with Immersed Boundary Method. For more information, please refer to "An improved direct-forcing immersed-boundary method for finite difference applications" (N Zhang, ZC Zheng - Journal of Computational Physics, 2007 - Elsevier)
+
+                            <br>
+                            <br>
+                            <button class="button info">Know More</button>
+                        </div>
+                    </li>
+                    <br>
+                    <li>
+                        <h2 class="no-margin-top hl-light-grey font-size-title">Error Dynamics</h2>
+                        <hr class="bg-blue" />
+                        <div class="hl-grey" style="text-align: justify;"></br>
+                            This is dummy text. If you are reading this, then it means that, this section is yet to be constructed. Please visit later and have a good day!
+                            <br>
+                            <br>
+                            <button class="button info">Know More</button>
+                        </div>
+                    </li>
+                </ul>
+           
+</div>
+<div class="cell size2"></div>
+</div>
+
+
+
+
+
+	</div> <!--research interest-->
+
+	<div class="flex-grid" id="results"> <!--results-->	
+		<h1 class="align-left font-size-title font-Exo-B hl-grey padding20 no-padding-right no-padding-bottom">Results</h1>
+
+		<div class="row align-justify">
+			<span id="close-results" class="mif-cross close cursor hl-light-grey"></span>
+		</div>
+
+		<br><br><br><br><br><br><br><br><h1 class="align-center font-Montserrat hl-grey font-size-title">This page is <i class="hl-deep-blue">under construction</i>. Sorry!</h1>
+
+	</div> <!--results-->
+
+	<div class="flex-grid" id="codes"> <!--codes-->	
+		<h1 class="align-left font-size-title font-Exo-B hl-pure-white padding20 no-padding-right no-padding-bottom">Codes</h1>
+
+		<div class="row align-justify">
+			<span id="close-codes" class="mif-cross close cursor hl-light-grey"></span>
+		</div>
+
+		<br><br><br><br><br><br><br><br><h1 class="align-center font-Montserrat hl-white font-size-title">This page is <i class="hl-green">under construction</i>. Sorry!</h1>
+
+	</div> <!--codes-->
+
+	<div class="flex-grid footer hl-light-grey">
+		<h1 class="align-center font-size-footer hl-white" id="credits">&copy; MegaMind, 2017 |<a href="credit.txt" target="_blank"> Credits</a></h1>
+	</div>
+
+<script type="text/javascript" src="js/anime.js"></script>
 </body>
 </html>
