@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Remote EXE</title>
+</head>
+<body>
+  <h3>Remote EXE Output</h3>
+  <pre id="output" style="background:#111;color:#0f0;padding:10px;height:300px;overflow:auto;"></pre>
+  <input id="inputBox" placeholder="Type input..." style="width:100%;" />
+  <button onclick="socket.send('__EXIT__')">Stop</button>
+
+  <script>
+    const output = document.getElementById("output");
+    const inputBox = document.getElementById("inputBox");
+
+    const socket = new WebSocket("wss://abcd-1234.ngrok.io");  // <- paste your ngrok URL here
+
+    socket.onmessage = (event) => {
+      output.textContent += event.data;
+      output.scrollTop = output.scrollHeight;
+    };
+
+    inputBox.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        socket.send(inputBox.value);
+        inputBox.value = "";
+      }
+    });
+  </script>
+</body>
+</html>
