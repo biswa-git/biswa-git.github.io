@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Linear Regression with Gradient Descent - Tutorial</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      max-width: 900px;
+      margin: auto;
+      padding: 30px;
+      background-color: #fcfcfc;
+      color: #222;
+      line-height: 1.7;
+    }
+    h1, h2, h3 {
+      color: #003366;
+      margin-top: 2em;
+    }
+    .equation {
+      background: #eef5ff;
+      border-left: 4px solid #007acc;
+      padding: 12px;
+      margin: 20px 0;
+    }
+    .code-block {
+      background: #f4f4f4;
+      border-left: 4px solid #ccc;
+      padding: 10px;
+      font-family: monospace;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    canvas {
+      margin: 20px 40px 0px 40px;
+      background: #fff;;
+    }
+  </style>
+</head>
+<body>
+  <h1>Linear Regression with Gradient Descent</h1>
+
+  <p>Welcome! In this tutorial, we will explore linear regression, one of the most fundamental algorithms in machine learning. We will walk through the math, intuition, and code for implementing it using gradient descent — a powerful optimization technique.</p>
+
+  <h2>1. Understanding Linear Regression</h2>
+
+  <p>Imagine you are planning to rent out an apartment in Kondapur area. From your friends, 
+    who already had rented out apartments in the same area, you manage to collect the carpet area (independent variable \(x\)) and the corresponding rent (dependent variable \(y\)).
+    You want to predict the rent of your apartment based on its size in square feet.
+  </p> 
+  <p>Here is the data you collected:</p>
+  <ul>
+    <li>(1000 sqft, ₹28,000)</li>
+    <li>(1200 sqft, ₹40,000)</li>
+    <li>(1500 sqft, ₹50,000)</li>
+    <li>(1800 sqft, ₹58,000)</li>
+    <li>(2000 sqft, ₹65,000)</li>
+  </ul>
+  <p>Your task is to find a line that best fits this data — a line that can be used to predict the rent for your apartment based on the carpet area of the unit. This is a classic case for <strong>linear regression</strong>.</p>
+
+  <p>The line can be described by this equation:</p>
+  <div class="equation">
+    \[ \hat{y} = wx + b \]
+  </div>
+  <p>Where:</p>
+  <ul>
+    <li><strong>\( \hat{y} \)</strong> is the predicted output,</li>
+    <li><strong>\( w \)</strong> is the slope (how steep the line is),</li>
+    <li><strong>\( b \)</strong> is the y-intercept (where the line crosses the Y-axis).</li>
+  </ul>
+
+
+  <h2>2. Deriving the Cost Function</h2>
+  <p>To quantify how well our line fits the data, we use a cost function. Let's derive the most commonly used cost function: <strong>Mean Squared Error (MSE)</strong>.</p>
+  <p>Assume we have a dataset with \( n \) points, where each point is \( (x_i, y_i) \). Our model predicts \( \hat{y}_i = wx_i + b \).</p>
+  <br><br>
+  <p>The error (or residual) for each point is the difference between the predicted and actual value:</p>
+  <div class="equation">
+    \[ e_i = \hat{y}_i - y_i = (wx_i + b) - y_i \]
+  </div>
+
+  <p>To penalize larger errors and ensure positivity, we square the error. Summing over all points gives the <em>Sum of Squared Errors (SSE)</em>:</p>
+  <div class="equation">
+    \[ SSE = \sum_{i=1}^{n} (wx_i + b - y_i)^2 \]
+  </div>
+  
+  <p>We take the mean to normalize over the number of samples. This gives the <strong>Mean Squared Error</strong>:</p>
+  <div class="equation">
+    \[ J(w, b) = \frac{1}{n} \sum_{i=1}^{n} (wx_i + b - y_i)^2 \]
+  </div>
+
+  <p>Our goal is to find \( w \) and \( b \) that minimize this cost function.</p>
+
+  <h2>3. Gradient Descent - Deep Dive</h2>
+  <p><strong>Gradient Descent</strong> is a first-order optimization algorithm. It helps us find the values of \( w \) and \( b \) that minimize the cost function \( J(w, b) \).</p>
+
+  <p>Here's the basic idea: if you're standing on a curved surface and want to reach the lowest point, you'd look at the steepest direction downhill and move a small step in that direction. That's what gradient descent does mathematically.</p>
+
+  <h3>3.1. The Gradient</h3>
+  <p>The <em>gradient</em> is a vector of partial derivatives. It tells us the direction of steepest ascent. Since we want to minimize the cost, we move in the opposite direction — the negative gradient.</p>
+
+  <p>We compute the partial derivatives of \( J(w, b) \) with respect to \( w \) and \( b \):</p>
+  <div class="equation">
+    \[
+    \frac{\partial J}{\partial w} = \frac{2}{n} \sum_{i=1}^{n} (wx_i + b - y_i) x_i
+    \]
+  </div>  
+  <div class="equation">
+    \[
+    \frac{\partial J}{\partial b} = \frac{2}{n} \sum_{i=1}^{n} (wx_i + b - y_i)
+    \]
+  </div>
+
+  <h3>3.2. Update Rules</h3>
+  <p>Using these gradients, we update \( w \) and \( b \) iteratively:</p>
+  <div class="equation">
+    \[
+    w := w - \alpha \cdot \frac{\partial J}{\partial w}, \quad
+    b := b - \alpha \cdot \frac{\partial J}{\partial b}
+    \]
+  </div>
+  <p>Here, \( \alpha \) is the <strong>learning rate</strong> — it controls how big a step we take. If it's too large, we might overshoot. If it's too small, convergence will be slow.</p>
+
+  <h3>3.3. Algorithm Overview</h3>
+  <ol>
+    <li>Initialize \( w \) and \( b \) (e.g. to 0).</li>
+    <li>Repeat for a number of epochs:
+      <ul>
+        <li>Compute predictions \( \hat{y}_i = wx_i + b \)</li>
+        <li>Compute gradients using derivatives above</li>
+        <li>Update \( w \) and \( b \)</li>
+      </ul>
+    </li>
+    <li>Stop when the cost converges or after set epochs.</li>
+  </ol>
+
+  <p>This process is guaranteed to converge to a local minimum if the learning rate is appropriate and the cost function is convex — which it is for linear regression.</p>
+
+  <p>Gradient descent has multiple variants like Batch Gradient Descent, Stochastic Gradient Descent, and Mini-batch Gradient Descent. This tutorial uses Batch Gradient Descent (i.e., we compute gradients over the entire dataset before updating \( w \) and \( b \)).</p>
+
+  <p>This concludes the deep dive into the theory. Now, let's implement this step-by-step.</p>
+
+  <h2>5. Code Implementation</h2>
+  <p>Here is the JavaScript code to perform linear regression with gradient descent:</p>
+  <div class="code-block">
+import numpy as np
+
+# Sample data
+X = np.array([1000, 1200, 1500, 1800, 2000])
+Y = np.array([28000, 40000, 50000, 58000, 65000])
+
+# Hyperparameters
+alpha = 0.01
+epochs = 50000
+w = 0
+b = 0
+n = len(X)
+
+
+
+
+
+# Training loop
+for epoch in range(epochs):
+    Y_pred = w * X + b
+    error = Y_pred - Y
+
+    dw = (2/n) * np.dot(error, X)
+    db = (2/n) * np.sum(error)
+
+    w -= alpha * dw
+    b -= alpha * db
+
+print(f"Final parameters: w = {w:.4f}, b = {b:.4f}")
+  </div>
+
+  <h2>6. Visualizing the Result</h2>
+  <canvas id="regressionChart" width="600" height="400"></canvas>
+
+  <script>
+    let data = [
+      { x: 1.0, y: 28 }, { x: 1.2, y: 40 }, { x: 1.5, y: 50 },
+      { x: 1.8, y: 58 }, { x: 2.0, y: 65 }
+    ];
+
+    let m = 0, b = 0;
+    let alpha = 0.01;
+    let epochs = 50000;
+
+    for (let i = 0; i < epochs; i++) {
+      let dm = 0, db = 0;
+      for (let point of data) {
+        let y_pred = m * point.x + b;
+        dm += (y_pred - point.y) * point.x;
+        db += (y_pred - point.y);
+      }
+      dm *= (2 / data.length);
+      db *= (2 / data.length);
+      m -= alpha * dm;
+      b -= alpha * db;
+    }
+
+    new Chart(document.getElementById('regressionChart').getContext('2d'), {
+    type: 'scatter',
+    data: {
+        datasets: [
+        {
+            label: 'Data Points',
+            data: data.map(p => ({ x: p.x * 1000, y: p.y * 1000 })),
+            backgroundColor: 'blue',
+            pointRadius: 7
+        },
+        {
+            label: 'Regression Line',
+            type: 'line',
+            data: data.map(p => ({ x: p.x * 1000, y: (m * p.x + b) * 1000 })),
+            borderColor: 'red',
+            pointRadius: 0,
+            fill: false,
+            tension: 0
+        }
+        ]
+    },
+    options: {
+        scales: {
+        x: { title: { display: true, text: 'X   (Square Feet)' } },
+        y: { title: { display: true, text: 'Y   (Rupees)' } }
+        }
+    }
+    });
+
+  </script>
+
+  <h2>Conclusion</h2>
+  <p>You've just built a linear regression model from scratch and learned how gradient descent optimizes the cost function. This is the foundation of many powerful models in machine learning. Great job!</p>
+
+</body>
+</html>

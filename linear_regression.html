@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linear Regression Visualizer</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-contour@4"></script>
+  <style>
+    body {
+      display: flex;
+      margin: 0;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      background: #f0f2f5;
+    }
+    .panel {
+      width: 22%;
+      height: 90vh;
+      min-width: 320px;
+      max-width: 320px;
+      padding: 24px 18px;
+      background: linear-gradient(135deg, #e3eafc 0%, #f5f7fa 100%);
+      border-right: none;
+      border-radius: 18px;
+      margin: 18px 0 18px 18px;
+      box-shadow: 0 4px 24px rgba(60, 100, 180, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .panel h3 {
+      margin: 0 0 16px 0;
+      font-size: 1.15rem;
+      color: #2a3b5d;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .input-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 18px;
+      width: 100%;
+    }
+    .panel input {
+      width: 90px;
+      margin: 0 8px 0 0;
+      padding: 7px 10px;
+      border: 1px solid #b0c4de;
+      border-radius: 7px;
+      background: #f8fafc;
+      font-size: 1rem;
+      transition: border 0.2s;
+      outline: none;
+    }
+    .panel input:focus {
+      border: 1.5px solid #3a7bd5;
+      background: #fff;
+    }
+    .button {
+      margin: 0;
+      padding: 7px 18px;
+      border: none;
+      border-radius: 7px;
+      background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+      color: #fff;
+      font-weight: 500;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(60, 100, 180, 0.08);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .button:hover {
+      background: linear-gradient(90deg, #005bea 0%, #3a7bd5 100%);
+      box-shadow: 0 4px 16px rgba(60, 100, 180, 0.12);
+    }
+    .data-list {
+      margin-top: 10px;
+      width: 100%;
+      max-height: 40vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #b0c4de #f5f7fa;
+    }
+    .data-list::-webkit-scrollbar {
+      width: 8px;
+      background: #f5f7fa;
+      border-radius: 8px;
+    }
+    .data-list::-webkit-scrollbar-thumb {
+      background: #b0c4de;
+      border-radius: 8px;
+    }
+    .data-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid #e3eafc;
+      font-size: 1rem;
+      color: #2a3b5d;
+    }
+    .data-item button {
+      background: none;
+      border: none;
+      color: #3a7bd5;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-left: 6px;
+      transition: color 0.2s;
+      border-radius: 3px;
+      padding: 2px 5px;
+    }
+    .data-item button:hover {
+      color: #005bea;
+      background: #e3eafc;
+    }
+    .canvas-container {
+      flex: 1;
+      padding: 0px 30px 0px 30px;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 1.5px solid #e3eafc;
+      margin-bottom: 12px;
+      margin-top: 18px;
+    }
+    .tab-btn {
+      padding: 10px 32px;
+      background: none;
+      border: none;
+      border-radius: 10px 10px 0 0;
+      font-size: 1rem;
+      color: #3a7bd5;
+      font-weight: 500;
+      cursor: pointer;
+      margin-right: 2px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tab-btn.active {
+      background: #f5f7fa;
+      color: #005bea;
+      border-bottom: 2px solid #005bea;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    canvas {
+      width: 100% !important;
+      height: 90vh !important;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(60,100,180,0.07);
+      background: #fff;
+      display: block;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    #regression-info {
+      width: 268px;
+      margin-bottom: 12px;
+      background: #f5f7fa;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(60,100,180,0.06);
+      padding: 14px 18px 10px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .regression-mse {
+      font-size: 1.08rem;
+      color: #2a3b5d;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+    .regression-eq {
+      font-size: 1.18rem;
+      color: #005bea;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <div id="regression-info"></div>
+    <h3>Add Data</h3>
+    <div class="input-row">
+      <input type="number" id="xVal" placeholder="x" />
+      <input type="number" id="yVal" placeholder="y" />
+      <button class="button" onclick="addData()">Add</button>
+    </div>
+    <h3>Points</h3>
+    <div class="data-list" id="dataList"></div>
+  </div>
+  <div class="canvas-container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab(0)">Graph</button>
+      <button class="tab-btn" onclick="showTab(1)">Error Contour</button>
+    </div>
+    <div id="tab-0" class="tab-content active">
+      <canvas id="chart"></canvas>
+    </div>
+    <div id="tab-1" class="tab-content">
+      <div id="contour-container" style="width:100%;height:500px;min-height:400px;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(60,100,180,0.07);margin:0 auto;margin-top:24px;position:relative;"></div>
+    </div>
+  </div>
+  <script>
+    let data = [];
+    let chart;
+    let contourChart;
+
+    function addData() {
+      const x = parseFloat(document.getElementById('xVal').value);
+      const y = parseFloat(document.getElementById('yVal').value);
+      if (!isNaN(x) && !isNaN(y)) {
+        data.push({ x, y });
+        document.getElementById('xVal').value = '';
+        document.getElementById('yVal').value = '';
+        updateDataList();
+        drawChart();
+        drawContourPlot(); // <-- refresh contour plot on add
+      }
+    }
+
+    function updateRegressionInfo() {
+      const fit = linearRegression(data);
+      let mse = '';
+      let eq = '';
+      if (fit && data.length > 0) {
+        const { slope, intercept } = fit;
+        // Calculate MSE
+        const mseVal = data.reduce((sum, p) => {
+          const pred = slope * p.x + intercept;
+          return sum + Math.pow(pred - p.y, 2);
+        }, 0) / data.length;
+        mse = `MSE: ${mseVal.toPrecision(4)}`;
+        eq = `$$y = ${slope.toPrecision(4)} \\times x + ${intercept.toPrecision(4)}$$`;
+      } else {
+        mse = 'MSE: -';
+        eq = '$$y = w \\times x + b$$';
+      }
+      document.getElementById('regression-info').innerHTML =
+        `<div class="regression-mse">${mse}</div>
+         <div class="regression-eq">${eq}</div>`;
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    function updateDataList() {
+      const container = document.getElementById('dataList');
+      container.innerHTML = '';
+      data.forEach((point, index) => {
+        const div = document.createElement('div');
+        div.className = 'data-item';
+        div.innerHTML = `
+          <span>[${point.x}, ${point.y}]</span>
+          <span>
+            <button onclick="editData(${index})">✎</button>
+            <button onclick="deleteData(${index})">✕</button>
+          </span>
+        `;
+        container.appendChild(div);
+      });
+      updateRegressionInfo();
+      drawContourPlot(); // <-- refresh contour plot on edit/delete
+    }
+
+    function editData(index) {
+      const newX = parseFloat(prompt('Edit X:', data[index].x));
+      const newY = parseFloat(prompt('Edit Y:', data[index].y));
+      if (!isNaN(newX) && !isNaN(newY)) {
+        data[index] = { x: newX, y: newY };
+        updateDataList();
+        drawChart();
+      }
+    }
+
+    function deleteData(index) {
+      data.splice(index, 1);
+      updateDataList();
+      drawChart();
+    }
+
+    // Replace linearRegression with backpropagation-based fitting
+    function linearRegression(points) {
+      const n = points.length;
+      if (n === 0) return null;
+      // Initialize weights
+      let w = 0, b = 0;
+      const lr = 0.01; // learning rate
+      const epochs = 50000;
+      for (let epoch = 0; epoch < epochs; epoch++) {
+        let dw = 0, db = 0;
+        for (let i = 0; i < n; i++) {
+          const x = Number(points[i].x);
+          const y = Number(points[i].y);
+          const y_pred = w * x + b;
+          dw += 2 * x * (y_pred - y);
+          db += 2 * (y_pred - y);
+        }
+        dw /= n;
+        db /= n;
+        w -= lr * dw;
+        b -= lr * db;
+      }
+      return { slope: w, intercept: b };
+    }
+
+    function drawChart() {
+      const scatterData = {
+        datasets: [
+          {
+            label: 'Data Points',
+            data: data.map(p => ({
+              x: Number(p.x),
+              y: Number(p.y)
+            })),
+            backgroundColor: 'rgba(255,182,193,0.9)',
+            showLine: false,
+            parsing: false,
+            pointRadius: 15,
+            pointHoverRadius: 20,
+            borderColor: 'rgba(255,182,193,0.9)',
+            borderWidth: 2,
+          }
+        ]
+      };
+
+      const fit = linearRegression(data);
+      if (fit) {
+        const { slope, intercept } = fit;
+        const xVals = data.map(p => Number(p.x));
+        const minX = Math.min(...xVals);
+        const maxX = Math.max(...xVals);
+
+        // Use high precision for regression line endpoints
+        const regressionLine = [
+          { x: minX, y: slope * minX + intercept },
+          { x: maxX, y: slope * maxX + intercept },
+        ];
+
+        scatterData.datasets.push({
+          label: 'Regression Line',
+          data: regressionLine,
+          borderColor: 'rgba(52,152,219,0.8)',
+          backgroundColor: 'transparent',
+          type: 'line',
+          parsing: false,
+          borderWidth: 5,
+        });
+      }
+
+      if (chart) chart.destroy();
+
+      const ctx = document.getElementById('chart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'scatter',
+        data: scatterData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: 'linear',
+              position: 'bottom',
+              ticks: {
+                precision: 8
+              }
+            },
+            y: {
+              type: 'linear',
+              ticks: {
+                precision: 8
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function showTab(idx) {
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === idx);
+      });
+      document.querySelectorAll('.tab-content').forEach((tab, i) => {
+        tab.classList.toggle('active', i === idx);
+      });
+      if (idx === 1) {
+        setTimeout(drawContourPlot, 100);
+      }
+    }
+
+    function drawContourPlot() {
+      const fit = linearRegression(data);
+      const container = document.getElementById('contour-container');
+      container.innerHTML = '';
+      const width = container.offsetWidth;
+      const height = container.offsetHeight;
+
+      if (!fit || data.length === 0) return;
+
+      const { slope: wCenter, intercept: bCenter } = fit;
+      const wRange = 1, bRange = 1, steps = 80;
+      const wStart = wCenter - wRange, wEnd = wCenter + wRange;
+      const bStart = bCenter - bRange, bEnd = bCenter + bRange;
+
+      // Prepare grid
+      const values = new Float64Array(steps * steps);
+      let minError = Infinity, maxError = -Infinity;
+      for (let j = 0; j < steps; j++) {
+        for (let i = 0; i < steps; i++) {
+          const w = wStart + (wEnd - wStart) * i / (steps - 1);
+          const b = bStart + (bEnd - bStart) * j / (steps - 1);
+          let mse = 0;
+          for (const p of data) {
+            const pred = Number(w) * Number(p.x) + Number(b);
+            mse += Math.pow(pred - Number(p.y), 2);
+          }
+          mse /= data.length;
+          values[j * steps + i] = mse;
+          minError = Math.min(minError, mse);
+          maxError = Math.max(maxError, mse);
+        }
+      }
+
+      // D3 contour
+      const thresholds = d3.range(minError, maxError, (maxError - minError) / 30);
+      const contours = d3.contours()
+        .size([steps, steps])
+        .thresholds(thresholds)
+        (values);
+
+      // D3 color scale
+      const color = d3.scaleSequential(d3.interpolateRdYlBu)
+        .domain([maxError, minError]);
+
+      // Axes scales
+      const x = d3.scaleLinear()
+        .domain([wStart, wEnd])
+        .range([0, width]);
+      const y = d3.scaleLinear()
+        .domain([bStart, bEnd])
+        .range([height, 0]);
+
+      const xAxis = g => g
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x).ticks(8))
+        .call(g => g.select(".domain").attr("stroke", "#222").attr("stroke-width", 2))
+        .call(g => g.selectAll(".tick line").attr("stroke", "#222").attr("stroke-width", 1));
+
+      const yAxis = g => g
+        .attr("transform", `translate(0,0)`)
+        .call(d3.axisLeft(y).ticks(8))
+        .call(g => g.select(".domain").attr("stroke", "#222").attr("stroke-width", 2))
+        .call(g => g.selectAll(".tick line").attr("stroke", "#222").attr("stroke-width", 1));
+
+      // SVG styled like the example
+      const svg = d3.create("svg")
+        .attr("viewBox", [0, 0, width + 28, height])
+        .style("display", "block")
+        .style("margin", "0 -14px")
+        .style("width", "calc(100% + 28px)");
+
+      svg.append("g")
+        .attr("fill", "none")
+        .attr("stroke", "#fff")
+        .attr("stroke-opacity", 0.5)
+        .selectAll("path")
+        .data(contours)
+        .join("path")
+        .attr("fill", d => color(d.value))
+        .attr("d", d3.geoPath(d3.geoIdentity().scale(width / steps)));
+
+      svg.append("g").call(xAxis);
+      svg.append("g").call(yAxis);
+
+      // Draw current (w,b) point
+      const wx = x(wCenter);
+      const by = y(bCenter);
+      svg.append("circle")
+        .attr("cx", wx)
+        .attr("cy", by)
+        .attr("r", 10)
+        .attr("fill", "red")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 2.5);
+
+      // Axis labels
+      svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", height + 32)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#222")
+        .attr("font-size", "16px")
+        .text("Weight (w)");
+      svg.append("text")
+        .attr("x", -height / 2)
+        .attr("y", -36)
+        .attr("transform", `rotate(-90)`)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#222")
+        .attr("font-size", "16px")
+        .text("Bias (b)");
+
+      container.appendChild(svg.node());
+    }
+
+    window.onload = () => {
+      drawChart();
+      updateRegressionInfo();
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+</html>

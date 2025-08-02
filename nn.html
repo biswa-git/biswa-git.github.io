@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Neural Network Visualizer</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: row;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
+      min-height: 100vh;
+      margin: 0;
+      width: 100vw;
+      box-sizing: border-box;
+    }
+    #controls {
+      width: 350px;
+      padding: 28px 22px 22px 22px;
+      border-right: 1px solid #e3e8ee;
+      background: #fff;
+      box-shadow: 2px 0 16px 0 rgba(60, 60, 120, 0.07);
+      border-radius: 0 18px 18px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      margin: 24px 0 0 24px;
+      height: fit-content;
+      z-index: 1000;
+    }
+    #controls h3 {
+      margin-top: 0;
+      font-size: 1.3em;
+      color: #2d3a4a;
+      letter-spacing: 0.5px;
+    }
+    #controls label {
+      font-size: 1em;
+      color: #3a4a5a;
+      margin-bottom: 4px;
+      display: block;
+    }
+    #controls input[type="number"], #controls input[type="text"] {
+      width: 90%;
+      padding: 7px 10px;
+      margin-bottom: 12px;
+      border: 1px solid #cfd8dc;
+      border-radius: 6px;
+      font-size: 1em;
+      background: #f6f8fa;
+      transition: border 0.2s;
+      outline: none;
+    }
+    #controls input:focus {
+      border: 1.5px solid #5b9aff;
+      background: #fff;
+    }
+    #controls button {
+      background: linear-gradient(90deg, #5b9aff 0%, #3a7bd5 100%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 1em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px 0 rgba(60, 60, 120, 0.08);
+      transition: background 0.2s, box-shadow 0.2s;
+      margin-top: 8px;
+    }
+    #controls button:hover {
+      background: linear-gradient(90deg, #3a7bd5 0%, #5b9aff 100%);
+      box-shadow: 0 4px 16px 0 rgba(60, 60, 120, 0.13);
+    }
+    #main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      min-height: 0;
+      margin: 24px 0 24px 0;
+      position: relative;
+    }
+    @media (min-width: 1400px) {
+      #main-content {
+        margin-left: calc(300px + 48px); /* width of #controls + margin */
+      }
+    }
+    #network {
+      display: block;
+      height: 600px;
+      width: 1000px;
+      background: #f6f8fa;
+      border-radius: 18px;
+      margin: 0 auto 24px auto;
+      box-shadow: 0 2px 16px 0 rgba(60, 60, 120, 0.07);
+    }
+    #chart-container {
+      width: 1000px;
+      max-width: 98vw;
+      height: 600px;
+      margin: 0 auto 24px auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px 0 rgba(60, 60, 120, 0.06);
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .neuron {
+      fill: url(#neuronGradient);
+      cursor: move;
+      stroke: #3a7bd5;
+      stroke-width: 2.5px;
+      filter: drop-shadow(0 2px 8px rgba(60, 60, 120, 0.10));
+    }
+    .bias-input, .weight-input {
+      position: absolute;
+      width: 54px;
+      padding: 5px 0;
+      font-size: 1em;
+      border-radius: 6px;
+      text-align: center;
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .bias-input:focus, .weight-input:focus {
+      border: 1.5px solid #5b9aff;
+      background: #fff;
+      box-shadow: 0 2px 12px 0 rgba(60, 60, 120, 1);
+    }
+    .bias-input {
+      background: rgba(255, 197, 176, 0.9);
+      border: 1.5px solid #fd7442;
+    }
+    .weight-input {
+      background: rgba(194, 217, 255, 0.9);
+      border: 1.5px solid #5b9aff;
+    }
+    .neuron-label text {
+      font-size: 1.1em;
+      font-weight: 600;
+      fill: #fff;
+      text-shadow: 0 2px 8px rgba(60, 60, 120, 0.18);
+      pointer-events: none;
+    }
+    @media (max-width: 1100px) {
+      #controls {
+        margin: 0;
+        border-radius: 0;
+      }
+      #network {
+        margin: 0;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="controls">
+  <h3>Network Configuration</h3>
+  <label>Hidden Layers:</label>
+  <input type="number" id="numLayers" value="2" min="1" max="5"><br><br>
+
+  <label>Neurons per Hidden Layer (comma-separated):</label><br>
+  <input type="text" id="neuronsPerLayer" value="3,3"><br><br>
+
+  <button onclick="generateNetwork()">Generate Network</button>
+  <button id="updateBtn" style="margin-left:10px;" onclick="updateNetwork()">Update Network</button>
+</div>
+
+<div id="main-content">
+  <svg id="network"></svg>
+  <div id="chart-container">
+    <div style="display: flex; align-items: center; justify-content: flex-end; width: 98%; max-width: 1160px; padding: 16px 12px 0 0; gap: 12px;">
+      <label for="minInput" style="margin-top: 35px; font-size:1em; color:#3a4a5a;">Min:</label>
+      <input type="number" id="minInput" value="-1" step="0.01" style="width:70px; margin-top: 35px; padding:4px 8px; border-radius:5px; border:1px solid #cfd8dc;">
+      <label for="maxInput" style="margin-top: 35px; font-size:1em; color:#3a4a5a;">Max:</label>
+      <input type="number" id="maxInput" value="1" step="0.01" style="width:70px; margin-top: 35px; padding:4px 8px; border-radius:5px; border:1px solid #cfd8dc;">
+      <button id="calcBtn" onclick="calculateGraph()" style="margin-left:10px; margin-top: 35px; padding:6px 16px; border-radius:6px; background:linear-gradient(90deg,#5b9aff 0%,#3a7bd5 100%); color:#fff; border:none; font-size:1em; font-weight:500; cursor:pointer;">Calculate</button>
+    </div>
+    <canvas id="outputChart"></canvas>
+  </div>
+</div>
+
+<script>
+let svg = d3.select("#network").attr("width", 1000).attr("height", 600);
+// Add SVG gradient for neurons
+let defs = svg.append("defs");
+let gradient = defs.append("linearGradient")
+  .attr("id", "neuronGradient")
+  .attr("x1", "0%")
+  .attr("y1", "0%")
+  .attr("x2", "100%")
+  .attr("y2", "100%");
+gradient.append("stop")
+  .attr("offset", "0%")
+  .attr("stop-color", "#5b9aff");
+gradient.append("stop")
+  .attr("offset", "100%")
+  .attr("stop-color", "#3a7bd5");
+let neuronRadius = 36;
+let layers = [];
+let links = [];
+let biasInputs = [];
+let weightInputs = [];
+
+function generateNetwork() {
+  svg.selectAll("*").remove();
+  d3.selectAll(".bias-input, .weight-input").remove();
+  layers = [];
+  links = [];
+
+  const numLayers = parseInt(document.getElementById("numLayers").value);
+  const neuronsPerLayer = document.getElementById("neuronsPerLayer").value.split(',').map(n => parseInt(n));
+
+  if (neuronsPerLayer.length !== numLayers) {
+    alert("Mismatch in number of hidden layers and neurons.");
+    return;
+  }
+
+  // Build layers: input + hidden + output
+  const allLayers = [1, ...neuronsPerLayer, 1];
+
+  let width = parseInt(svg.attr("width"));
+  let height = parseInt(svg.attr("height"));
+  let layerSpacing = width / (allLayers.length + 1);
+
+  let neuronId = 0;
+
+  // Create neurons
+  allLayers.forEach((count, layerIndex) => {
+    let layer = [];
+    let verticalSpacing = height / (count + 1);
+    for (let i = 0; i < count; i++) {
+      let x = (layerIndex + 1) * layerSpacing;
+      let y = (i + 1) * verticalSpacing;
+      layer.push({
+        id: neuronId++,
+        layer: layerIndex,
+        bias: Math.random().toFixed(2),
+        value: 0,
+        x: x,
+        y: y
+      });
+    }
+    layers.push(layer);
+  });
+
+  // Create links
+  for (let i = 0; i < layers.length - 1; i++) {
+    layers[i].forEach(source => {
+      layers[i + 1].forEach(target => {
+        links.push({
+          source: source,
+          target: target,
+          weight: (Math.random() * 2 - 1).toFixed(2)
+        });
+      });
+    });
+  }
+
+  renderNetwork();
+  updateChart();
+}
+
+function renderNetwork() {
+  svg.selectAll("*").remove();
+  d3.selectAll(".bias-input, .weight-input").remove();
+  biasInputs = [];
+  weightInputs = [];
+
+  const svgRect = svg.node().getBoundingClientRect();
+  const scrollX = window.scrollX || window.pageXOffset;
+  const scrollY = window.scrollY || window.pageYOffset;
+
+  links.forEach(link => {
+    svg.append("line")
+      .attr("x1", link.source.x)
+      .attr("y1", link.source.y)
+      .attr("x2", link.target.x)
+      .attr("y2", link.target.y)
+      .attr("stroke", "#aaa")
+      .attr("stroke-width", 1);
+
+    // Add weight input
+    let midX = (link.source.x + link.target.x) / 2;
+    let midY = (link.source.y + link.target.y) / 2;
+
+    let input = document.createElement("input");
+    input.className = "weight-input";
+    input.value = link.weight;
+    input.style.position = "absolute";
+    input.style.left = `${svgRect.left + midX + scrollX}px`;
+    input.style.top = `${svgRect.top + midY + scrollY}px`;
+    input.style.transform = "translate(-50%, -50%)";
+
+    input.oninput = () => {
+      link.weight = parseFloat(input.value);
+      updateChart();
+    };
+    weightInputs.push(input);
+    document.body.appendChild(input);
+  });
+
+  layers.flat().forEach(neuron => {
+    svg.append("circle")
+      .attr("cx", neuron.x)
+      .attr("cy", neuron.y)
+      .attr("r", neuronRadius)
+      .attr("fill", "#1f77b4")
+      .call(d3.drag()
+        .on("drag", (event) => {
+          neuron.x = event.x;
+          neuron.y = event.y;
+          renderNetwork();
+        }));
+
+    svg.append("g")
+      .attr("class", "neuron-label")
+      .attr("data-id", neuron.id)
+      .append("text")
+      .attr("x", neuron.x)
+      .attr("y", neuron.y + 5)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#fff")
+      .text(neuron.value.toFixed(2));
+
+    // Add bias input positioned just below the neuron
+    let input = document.createElement("input");
+    input.className = "bias-input";
+    input.value = neuron.bias;
+    input.style.position = "absolute";
+    input.style.left = `${svgRect.left + neuron.x + scrollX}px`;
+    input.style.top = `${svgRect.top + neuron.y + neuronRadius + scrollY}px`;
+    input.style.transform = "translate(-50%, 0)";
+
+    input.oninput = () => {
+      neuron.bias = parseFloat(input.value);
+      updateChart();
+    };
+    biasInputs.push(input);
+    document.body.appendChild(input);
+  });
+}
+
+function forwardPropagate(inputVal) {
+  layers[0][0].value = inputVal; // input neuron has only one value
+
+  for (let l = 1; l < layers.length; l++) {
+    let isOutputLayer = l === layers.length - 1;
+
+    layers[l].forEach(targetNeuron => {
+      let sum = 0;
+      links.forEach(link => {
+        if (link.target.id === targetNeuron.id) {
+          sum += link.source.value * parseFloat(link.weight);
+        }
+      });
+      sum += parseFloat(targetNeuron.bias);
+
+      // Apply activation
+      targetNeuron.value = isOutputLayer
+        ? sum                  // linear activation
+        : Math.max(0, sum);    // ReLU for hidden layers
+    });
+  }
+  // Return output neuron value
+  return layers[layers.length - 1][0].value;
+}
+
+let chart = new Chart(document.getElementById("outputChart"), {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [{
+      label: 'Output',
+      data: [],
+      borderColor: '#3a7bd5',
+      backgroundColor: 'rgba(91,154,255,0.12)',
+      pointBackgroundColor: '#fd7442',
+      pointBorderColor: '#fff',
+      pointRadius: 0,
+      pointHoverRadius: 8,
+      borderWidth: 3,
+      fill: false,
+      cubicInterpolationMode: 'default',
+      tension: 0,
+    }]
+  },
+  options: {
+    responsive: true,
+    animation: true,
+    plugins: {
+      legend: {
+        display: true,
+        labels: {
+          color: '#2d3a4a',
+          font: { size: 16, weight: 'bold' }
+        }
+      },
+      tooltip: {
+        backgroundColor: '#fff',
+        titleColor: '#3a7bd5',
+        bodyColor: '#2d3a4a',
+        borderColor: '#3a7bd5',
+        borderWidth: 1,
+        padding: 12,
+        cornerRadius: 8,
+        titleFont: { size: 15, weight: 'bold' },
+        bodyFont: { size: 14 }
+      }
+    },
+    scales: {
+      x: {
+        title: { display: true, text: 'Input', color: '#3a4a5a', font: { size: 16 } },
+        grid: { color: 'rgba(60,60,120,0.07)' },
+        ticks: { color: '#3a4a5a', font: { size: 13 } }
+      },
+      y: {
+        title: { display: true, text: 'Output', color: '#3a4a5a', font: { size: 16 } },
+        grid: { color: 'rgba(60,60,120,0.07)' },
+        ticks: { color: '#3a4a5a', font: { size: 13 } }
+      }
+    }
+  }
+});
+
+function updateNeuronValues() {
+  layers.flat().forEach(neuron => {
+    svg.select(`g.neuron-label[data-id='${neuron.id}'] text`)
+      .text(neuron.value.toFixed(2));
+  });
+}
+
+function getInputRange() {
+  let min = parseFloat(document.getElementById('minInput')?.value ?? -1);
+  let max = parseFloat(document.getElementById('maxInput')?.value ?? 1);
+  if (isNaN(min)) min = -1;
+  if (isNaN(max)) max = 1;
+  if (min > max) [min, max] = [max, min];
+  return { min, max };
+}
+
+function updateChart() {
+  const { min, max } = getInputRange();
+  let inputs = [], outputs = [];
+  const step = (max - min) / 40;
+  for (let x = min; x <= max; x += step) {
+    let y = forwardPropagate(x);
+    inputs.push(Number(x).toFixed(2));
+    outputs.push(y);
+  }
+  updateNeuronValues();
+  chart.data.labels = inputs;
+  chart.data.datasets[0].data = outputs;
+  chart.update();
+}
+
+function calculateGraph() {
+  updateChart();
+}
+
+function updateNetwork() {
+  renderNetwork();
+  updateChart();
+}
+
+generateNetwork();
+</script>
+
+</body>
+</html>

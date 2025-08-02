@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prerequisites to Learn Neural Networks</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .container {
+      width: 90%;
+      margin: 40px auto 40px auto;
+      background: transparent;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    .example {
+      background-color: #ffffff;
+      border-left: 5px solid #3498db;
+      padding: 10px;
+      margin: 10px 0;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📘 Prerequisites to Learn Neural Networks</h1>
+
+    <p>Before diving into neural networks, it’s important to understand some fundamental concepts from mathematics. In this guide, we will cover:</p>
+    <ul>
+      <li><strong>Linear Algebra</strong> - Essential for understanding data flow in networks.</li>
+      <li><strong>Calculus</strong> - Especially derivatives and chain rule, important for training neural networks using backpropagation.</li>
+    </ul>
+
+    <h2>1. 🧮 Linear Algebra</h2>
+    <p><em>Chapter 1: Linear Algebra for Neural Networks</em></p>
+    <p>Neural networks use vectors and matrices to represent data and parameters. Linear algebra provides the language and tools to work with these efficiently. You’ll encounter these concepts when working with layers, weights, and activations.</p>
+    <ul>
+      <li><strong>Vectors</strong> represent data points, weights, or activations.</li>
+      <li><strong>Matrices</strong> are used to transform vectors between layers.</li>
+      <li><strong>Operations</strong> like addition, multiplication, and dot products are fundamental for calculations in neural networks.</li>
+    </ul>
+
+    <h3>✅ Vectors</h3>
+    <p>A vector is simply an ordered list of numbers, often written as a column or row. For example:</p>
+    <div class="example">
+      <strong>Example 1:</strong><br><br>
+      \( \mathbf{v} = \begin{bmatrix} 2 \\ 4 \\ 6 \end{bmatrix} \)
+    </div>
+    <div class="example">
+      <strong>Example 2:</strong><br><br>
+      \( \mathbf{w} = \begin{bmatrix} -1 \\ 0 \\ 3 \end{bmatrix} \)
+    </div>
+    <p>In a neural network, vectors often represent inputs, weights, or outputs of a layer. For example, an input image might be flattened into a vector before being processed.</p>
+    <p>Vectors can be added together, multiplied by scalars, or used in dot products.</p>
+    <div class="example" style="border-left: 5px solid #e67e22;">
+      <strong>Exercise 1.1:</strong><br><br>
+      Let \( \mathbf{a} = \begin{bmatrix} 5 \\ 2 \end{bmatrix} \) and \( \mathbf{b} = \begin{bmatrix} 1 \\ 7 \end{bmatrix} \).<br><br>
+      Compute \( \mathbf{a} + \mathbf{b} \).
+    </div>
+
+    <h3>✅ Vector Operations</h3>
+    <p>Common operations:</p>
+    <ul>
+      <li><strong>Addition</strong>: Add corresponding elements of two vectors.<br><br>
+        <span style="font-family: monospace;">
+          \( \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix} + \begin{bmatrix} 4 \\ 5 \\ 6 \end{bmatrix} = \begin{bmatrix} 5 \\ 7 \\ 9 \end{bmatrix} \)
+        </span>
+      </li>
+      <br>
+      <li><strong>Scalar Multiplication</strong>: Multiply every element of a vector by a number.<br><br>
+        <span style="font-family: monospace;">
+          \( 3 \times \begin{bmatrix} 2 \\ -1 \\ 0 \end{bmatrix} = \begin{bmatrix} 6 \\ -3 \\ 0 \end{bmatrix} \)
+        </span>
+      </li>
+      <br>
+      <li><strong>Dot Product</strong>: Multiply corresponding elements and sum them.<br><br>
+        <span style="font-family: monospace;">
+          \( \begin{bmatrix} 1 \\ 2 \end{bmatrix} \cdot \begin{bmatrix} 3 \\ 4 \end{bmatrix} = (1 \times 3 + 2 \times 4) = 11 \)
+        </span>
+      </li>
+      <br>
+    </ul>
+    <div class="example">
+      <strong>Example 3 (Addition):</strong><br><br>
+      \( \mathbf{a} = \begin{bmatrix} 2 \\ 5 \end{bmatrix}, \mathbf{b} = \begin{bmatrix} 3 \\ 1 \end{bmatrix} \)<br><br>
+      \( \mathbf{a} + \mathbf{b} = \begin{bmatrix} 5 \\ 6 \end{bmatrix} \)
+    </div>
+    <br><br>
+    <div class="example">
+      <strong>Example 4 (Scalar Multiplication):</strong><br><br>
+      \( 4 \times \begin{bmatrix} 1 \\ -2 \end{bmatrix} = \begin{bmatrix} 4 \\ -8 \end{bmatrix} \)
+    </div>
+    <div class="example" style="border-left: 5px solid #e67e22;">
+      <strong>Exercise 1.2:</strong><br>
+      Compute the dot product of \( \mathbf{u} = \begin{bmatrix} 2 \\ 3 \end{bmatrix} \) and \( \mathbf{v} = \begin{bmatrix} 4 \\ 1 \end{bmatrix} \).
+    </div>
+    <p>These operations are used to combine inputs, scale weights, and compute activations in neural networks.</p>
+
+    <h3>✅ Matrices</h3>
+    <p>A matrix is a 2D array of numbers, often used to represent transformations or connections between layers. For example:</p>
+    <div class="example">
+      <strong>Example 5:</strong><br><br>
+      \( W = \begin{bmatrix} 0.2 & 0.8 \\ 0.5 & 0.3 \end{bmatrix} \)
+    </div>
+    <div class="example">
+      <strong>Example 6:</strong><br><br>
+      \( M = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix} \)
+    </div>
+    <p>Each row or column can represent weights connecting neurons between layers. Matrices allow us to process multiple inputs and outputs efficiently.</p>
+
+    <h3>✅ Matrix-Vector Multiplication</h3>
+    <p>In a feedforward neural network, we compute the output of a layer using matrix-vector multiplication. This operation applies all weights to the input vector at once:</p>
+    <div class="example">
+      <strong>Example 7:</strong><br><br>
+      \( W = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}, x = \begin{bmatrix} 5 \\ 6 \end{bmatrix} \)<br><br>
+      \( W \cdot x = \begin{bmatrix} 1 \times 5 + 2 \times 6 \\ 3 \times 5 + 4 \times 6 \end{bmatrix} = \begin{bmatrix} 17 \\ 39 \end{bmatrix} \)<br><br>
+    </div>
+    <div class="example">
+      <strong>Example 8:</strong><br><br>
+      \( W = \begin{bmatrix} 0 & 1 \\ 2 & 3 \end{bmatrix}, x = \begin{bmatrix} 4 \\ 2 \end{bmatrix} \)<br><br>
+      \( W \cdot x = \begin{bmatrix} 0 \times 4 + 1 \times 2 \\ 2 \times 4 + 3 \times 2 \end{bmatrix} = \begin{bmatrix} 2 \\ 14 \end{bmatrix} \)
+    </div>
+    <div class="example" style="border-left: 5px solid #e67e22;">
+      <strong>Exercise 1.3:</strong><br><br>
+      Let \( A = \begin{bmatrix} 2 & 1 \\ 0 & 3 \end{bmatrix} \) and \( x = \begin{bmatrix} 1 \\ 4 \end{bmatrix} \). Compute \( A \cdot x \).
+    </div>
+    <div class="example" style="border-left: 5px solid #e67e22;">
+      <strong>Exercise 1.4:</strong><br><br>
+      Let \( W = \begin{bmatrix} 2 & 0 \\ 1 & 3 \end{bmatrix} \), \( x = \begin{bmatrix} 3 \\ 5 \end{bmatrix} \), and bias \( b = \begin{bmatrix} 1 \\ -2 \end{bmatrix} \). Compute \( W \cdot x + b \).
+    </div>
+    <p>This operation transforms inputs to activations for the next layer and is repeated for each layer in the network.</p>
+
+    <hr style="margin: 40px 0;">
+
+    <h2>2. 🔁 Basics of Calculus</h2>
+    <p><em>Chapter 2: Calculus for Neural Networks</em></p>
+    <p>Calculus helps us understand how changing one variable affects another — exactly what we need when updating weights in neural networks! It’s crucial for optimization and learning.</p>
+    <ul>
+      <li><strong>Derivatives</strong> measure how a function changes as its input changes.</li>
+      <li><strong>Chain Rule</strong> allows us to compute derivatives of functions built from other functions (composite functions).</li>
+    </ul>
+
+    <h3>✅ Derivatives</h3>
+    <p>A derivative tells you how fast something is changing. For example:</p>
+    <div class="example">
+      <strong>Example 1:</strong><br><br>
+      If \( f(x) = x^2 \), then \( f'(x) = 2x \). At \( x = 3 \), the slope is \( 2 \times 3 = 6 \).
+    </div>
+    <div class="example">
+      <strong>Example 2:</strong><br><br>
+      If \( g(x) = 5x + 1 \), then \( g'(x) = 5 \). The slope is always 5, no matter the value of \( x \).
+    </div>
+    <div class="example" style="border-left: 5px solid #e67e22;">
+      <strong>Exercise 2.1:</strong><br><br>
+      Find the derivative of \( h(x) = 3x^2 + 2x \).
+    </div>
+    <p>In neural networks, derivatives tell us how much we should change each weight to reduce the error. During training, we compute derivatives of the loss function with respect to each weight.</p>
+    <p>For example, if the loss increases rapidly with a small change in a weight, the derivative is large and we know to adjust that weight more.</p>
+
+    <h3>✅ Chain Rule</h3>
+    <p>The chain rule allows us to compute derivatives of composite functions. In neural nets, outputs depend on layers of functions:</p>
+    <div class="example">
+      <strong>Example 3:</strong><br><br>
+      If \( z = f(g(x)) \), then \( \frac{dz}{dx} = f'(g(x)) \cdot g'(x) \)
+    </div>
+    <div class="example">
+      <strong>Example 4:</strong><br><br>
+      If \( y = (2x + 1)^3 \), then: Let \( u = 2x + 1 \), so \( y = u^3 \).<br><br>
+      \( \frac{dy}{dx} = 3u^2 \cdot 2 = 6(2x+1)^2 \)
+    </div>
+    <div class="example">
+      <strong>Example 5 (Multi-layer Composition):</strong><br><br>
+      Let \( y = f(g(h(x))) \), where: \( h(x) = x^2 \); \( g(u) = \sin(u) \); \( f(v) = e^v \)<br><br>
+      Then, \( \frac{dy}{dx} = f'(g(h(x))) \cdot g'(h(x)) \cdot h'(x) \)<br><br>
+      Step by step:<br><br>
+      - \( h'(x) = 2x \)<br>
+      - \( g'(u) = \cos(u) \) ⇒ \( g'(h(x)) = \cos(x^2) \)<br>
+      - \( f'(v) = e^v \) ⇒ \( f'(g(h(x))) = e^{\sin(x^2)} \)<br><br>
+      So, \( \frac{dy}{dx} = e^{\sin(x^2)} \cdot \cos(x^2) \cdot 2x \)
+    </div>
+    <div class="example" style="border-left: 5px solid #e67e22;">
+      <strong>Exercise 2.2:</strong><br><br>
+      If \( f(x) = (x^2 + 1)^4 \), use the chain rule to find \( f'(x) \).
+    </div>
+    <p>Backpropagation — the algorithm used to train neural networks — uses the chain rule to pass gradients backward through each layer. This lets us update all weights efficiently, even in deep networks.</p>
+    <p>For example, if the output depends on several layers, the chain rule helps us find how a change in the input affects the final output by multiplying derivatives at each layer.</p>
+
+    <hr style="margin: 40px 0;">
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <h2>🔚 Answers to Exercises</h2>
+    <ul>
+      <li><strong>Exercise 1.1:</strong> \( \begin{bmatrix} 5+1 \\ 2+7 \end{bmatrix} = \begin{bmatrix} 6 \\ 9 \end{bmatrix} \)</li><br>
+      <li><strong>Exercise 1.2:</strong> \( 2 \times 4 + 3 \times 1 = 8 + 3 = 11 \)</li><br>
+      <li><strong>Exercise 1.3:</strong> \( \begin{bmatrix} 2 \times 1 + 1 \times 4 \\ 0 \times 1 + 3 \times 4 \end{bmatrix} = \begin{bmatrix} 2+4 \\ 0+12 \end{bmatrix} = \begin{bmatrix} 6 \\ 12 \end{bmatrix} \)</li><br>
+      <li><strong>Exercise 1.4:</strong> \( W \cdot x = \begin{bmatrix} 2 \times 3 + 0 \times 5 \\ 1 \times 3 + 3 \times 5 \end{bmatrix} = \begin{bmatrix} 6 \\ 3+15 \end{bmatrix} = \begin{bmatrix} 6 \\ 18 \end{bmatrix} \), so \( W \cdot x + b = \begin{bmatrix} 6+1 \\ 18-2 \end{bmatrix} = \begin{bmatrix} 7 \\ 16 \end{bmatrix} \)</li><br>
+      <li><strong>Exercise 2.1:</strong> \( h'(x) = 6x + 2 \)</li><br>
+      <li><strong>Exercise 2.2:</strong> Let \( u = x^2 + 1 \), so \( f(x) = u^4 \). \( f'(x) = 4u^3 \cdot 2x = 8x(x^2 + 1)^3 \)</li><br>
+    </ul>
+  </div>
+</body>
+</html>
