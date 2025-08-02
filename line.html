@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Understanding y = w * x + b</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px auto;
+      padding: 0 20px;
+      max-width: 1000px;
+      background: #f8f9fa;
+      color: #333;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    .controls {
+      margin: 20px 0;
+    }
+    .controls label, .controls input {
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    canvas {
+      margin: 30px 0;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+    .example {
+      background: #fff;
+      border-left: 4px solid #007BFF;
+      padding: 10px 15px;
+      margin-bottom: 20px;
+    }
+    code {
+      background: #eef;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Understanding the Straight Line Equation: <code>y = w * x + b</code></h1>
+
+  <p>
+    The equation <strong>y = w * x + b</strong> represents a straight line in a 2D space:
+    <ul>
+      <li><strong>w</strong> is the <strong>slope</strong> of the line – how steep it is.</li>
+      <li><strong>b</strong> is the <strong>intercept</strong> – where it cuts the y-axis.</li>
+    </ul>
+    This form is often called the <strong>slope-intercept form</strong>.
+  </p>
+
+  <h2>📉 How It Works</h2>
+
+  <p>Each value of <code>x</code> gives a corresponding value of <code>y</code> by plugging into the formula.</p>
+
+  <p>
+    Example: if <code>w = 2</code> and <code>b = 3</code>, then:
+    <br>
+    <code>y = 2 * x + 3</code> → when <code>x = 1</code>, <code>y = 5</code>; when <code>x = -1</code>, <code>y = 1</code>
+  </p>
+
+  <div class="controls">
+    <label for="slope">Slope (w):</label>
+    <input type="number" id="slope" value="1" step="0.1" onchange="updateChart()">
+    <label for="intercept">Intercept (b):</label>
+    <input type="number" id="intercept" value="0" step="0.1" onchange="updateChart()">
+  </div>
+
+  <canvas id="lineChart" width="800" height="400"></canvas>
+
+  <h2>📊 Real-World Interpretations</h2>
+
+  <div class="example">
+    <strong>Example 1: Rising line (Positive slope)</strong><br>
+    <code>y = 2x + 1</code> means for every 1 unit increase in <code>x</code>, <code>y</code> increases by 2. The line starts from y = 1 when x = 0.
+    <br><em>Use case: Income grows faster with experience.</em>
+  </div>
+
+  <div class="example">
+    <strong>Example 2: Falling line (Negative slope)</strong><br>
+    <code>y = -1.5x + 4</code> means as <code>x</code> increases, <code>y</code> decreases. The line slopes downward.
+    <br><em>Use case: Depreciation of a car’s value over time.</em>
+  </div>
+
+  <div class="example">
+    <strong>Example 3: Horizontal line (Zero slope)</strong><br>
+    <code>y = 5</code> (i.e., w = 0). The line is flat — y stays constant for all x.
+    <br><em>Use case: A flat-rate subscription fee, regardless of usage.</em>
+  </div>
+
+  <div class="example">
+    <strong>Example 4: Vertical shift (Changing b)</strong><br>
+    Keeping <code>w</code> the same but changing <code>b</code> shifts the line up or down.
+    <br><em>Use case: Base salary changes while performance bonus (w * x) remains same.</em>
+  </div>
+
+  <h2>🔍 Summary</h2>
+  <ul>
+    <li><strong>w</strong>: Controls the tilt of the line (positive → up, negative → down).</li>
+    <li><strong>b</strong>: Moves the line up/down (without changing its slope).</li>
+    <li>The line always crosses the y-axis at <code>(0, b)</code>.</li>
+  </ul>
+
+  <script>
+    const ctx = document.getElementById('lineChart').getContext('2d');
+    let chart;
+
+    function generateData(w, b) {
+      const data = [];
+      for (let x = -10; x <= 10; x += 0.5) {
+        data.push({ x: x, y: w * x + b });
+      }
+      return data;
+    }
+
+    function createChart(w, b) {
+      chart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: `y = ${w} * x + ${b}`,
+            data: generateData(w, b),
+            borderColor: 'blue',
+            backgroundColor: 'rgba(0, 0, 255, 0.1)',
+            showLine: true,
+            pointRadius: 0,
+            tension: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              type: 'linear',
+              title: {
+                display: true,
+                text: 'x'
+              },
+              min: -10,
+              max: 10
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'y'
+              },
+              min: -20,
+              max: 20
+            }
+          }
+        }
+      });
+    }
+
+    function updateChart() {
+      const w = parseFloat(document.getElementById('slope').value);
+      const b = parseFloat(document.getElementById('intercept').value);
+      const newData = generateData(w, b);
+      chart.data.datasets[0].data = newData;
+      chart.data.datasets[0].label = `y = ${w} * x + ${b}`;
+      chart.update();
+    }
+
+    createChart(1, 0);
+  </script>
+
+</body>
+</html>
