@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MNIST Digit Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .content {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .canvas-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        #drawingCanvas {
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            background-color: white;
+            cursor: crosshair;
+            display: block;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            width: 280px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #clearBtn {
+            background-color: #ef5350;
+            color: white;
+        }
+
+        #clearBtn:hover {
+            background-color: #e53935;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 83, 80, 0.3);
+        }
+
+        #predictBtn {
+            background-color: #667eea;
+            color: white;
+            flex: 2;
+        }
+
+        #predictBtn:hover:not(:disabled) {
+            background-color: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        #predictBtn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .result-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 250px;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            width: 100%;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .prediction {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .confidence {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .status {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 15px;
+            min-height: 20px;
+        }
+
+        .error {
+            color: #ef5350;
+            font-weight: 600;
+        }
+
+        .success {
+            color: #66bb6a;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                flex-direction: column;
+            }
+
+            .button-group {
+                width: 100%;
+            }
+
+            #drawingCanvas {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✏️ Digit Predictor</h1>
+        <p class="subtitle">Draw a digit and let the AI predict it</p>
+
+        <div class="content">
+            <div class="canvas-section">
+                <div class="label">Draw Here (0-9):</div>
+                <canvas id="drawingCanvas" width="280" height="280"></canvas>
+                <div class="button-group">
+                    <button id="clearBtn">Clear</button>
+                    <button id="predictBtn">Predict</button>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <div class="label">Prediction Result:</div>
+                <div class="result-box">
+                    <div class="result-label">Predicted Digit</div>
+                    <div class="prediction" id="prediction">?</div>
+                    <div class="confidence" id="confidence">Confidence: --</div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="status" id="status"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="model.js"></script>
+    <script src="predictor.js"></script>
+</body>
+</html>
